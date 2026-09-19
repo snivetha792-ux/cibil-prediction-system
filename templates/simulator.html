@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>What-If Credit Simulator</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 750px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #1e3a8a;
+        }
+
+        .description {
+            text-align: center;
+            color: #555;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 11px;
+            margin-top: 6px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 7px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 25px;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            background: #2563eb;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 20px;
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .box {
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            background: white;
+            border: 1px solid #ddd;
+        }
+
+        .box h3 {
+            margin-top: 0;
+        }
+
+        .risk {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .confidence {
+            margin-top: 10px;
+            color: #555;
+        }
+
+        .message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .error {
+            color: red;
+            margin-top: 15px;
+        }
+
+        .back {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #2563eb;
+            font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+
+            body {
+                padding: 15px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>What-If Credit Simulator</h1>
+
+        <p class="description">
+            Change your financial values and see how the predicted
+            credit risk changes.
+        </p>
+
+
+        <label>Monthly Income (₹)</label>
+        <input type="number" id="monthly_income">
+
+        <label>Employment Status</label>
+
+        <select id="employment_status">
+
+            <option value="Salaried">
+                Salaried
+            </option>
+
+            <option value="Self-Employed">
+                Self-Employed
+            </option>
+
+            <option value="Unemployed">
+                Unemployed
+            </option>
+
+        </select>
+
+
+        <label>Loan Amount (₹)</label>
+        <input type="number" id="loan_amount">
+
+
+        <label>EMI (₹)</label>
+        <input type="number" id="emi">
+
+
+        <label>Existing Loans</label>
+        <input type="number" id="existing_loans">
+
+
+        <label>Credit Utilization (%)</label>
+        <input type="number" id="credit_utilization">
+
+
+        <label>Repayment History (%)</label>
+        <input type="number" id="repayment_history">
+
+
+        <label>Delayed Payments</label>
+        <input type="number" id="delayed_payments">
+
+
+        <label>Outstanding Debt (₹)</label>
+        <input type="number" id="outstanding_debt">
+
+
+        <button onclick="simulateRisk()">
+            🔮 Simulate Credit Risk
+        </button>
+
+
+        <div class="result" id="result">
+
+            Enter values and click
+            <strong>Simulate Credit Risk</strong>.
+
+        </div>
+
+
+        <a href="/dashboard" class="back">
+            ← Back to Dashboard
+        </a>
+
+    </div>
+
+
+    <script>
+
+        // Load the latest prediction values
+        // into the simulator
+
+        function loadCurrentValues() {
+
+            const fields = [
+                "monthly_income",
+                "employment_status",
+                "loan_amount",
+                "emi",
+                "existing_loans",
+                "credit_utilization",
+                "repayment_history",
+                "delayed_payments",
+                "outstanding_debt"
+            ];
+
+            fields.forEach(function (field) {
+
+                const value =
+                    localStorage.getItem(field);
+
+                if (value !== null) {
+
+                    document.getElementById(field).value =
+                        value;
+
+                }
+
+            });
+
+        }
+
+
+        // Load values when page opens
+
+        loadCurrentValues();
+
+
+        function simulateRisk() {
+
+            const data = {
+
+                monthly_income:
+                    Number(
+                        document.getElementById(
+                            "monthly_income"
+                        ).value
+                    ),
+
+                employment_status:
+                    document.getElementById(
+                        "employment_status"
+                    ).value,
+
+                loan_amount:
+                    Number(
+                        document.getElementById(
+                            "loan_amount"
+                        ).value
+                    ),
+
+                emi:
+                    Number(
+                        document.getElementById(
+                            "emi"
+                        ).value
+                    ),
+
+                existing_loans:
+                    Number(
+                        document.getElementById(
+                            "existing_loans"
+                        ).value
+                    ),
+
+                credit_utilization:
+                    Number(
+                        document.getElementById(
+                            "credit_utilization"
+                        ).value
+                    ),
+
+                repayment_history:
+                    Number(
+                        document.getElementById(
+                            "repayment_history"
+                        ).value
+                    ),
+
+                delayed_payments:
+                    Number(
+                        document.getElementById(
+                            "delayed_payments"
+                        ).value
+                    ),
+
+                outstanding_debt:
+                    Number(
+                        document.getElementById(
+                            "outstanding_debt"
+                        ).value
+                    )
+            };
+
+
+            // Basic validation
+
+            for (const key in data) {
+
+                if (
+                    data[key] === "" ||
+                    data[key] === null ||
+                    Number.isNaN(data[key])
+                ) {
+
+                    document.getElementById(
+                        "result"
+                    ).innerHTML = `
+                    <p class="error">
+                        Please enter all required values.
+                    </p>
+                `;
+
+                    return;
+                }
+            }
+
+
+            const currentRisk =
+                localStorage.getItem("risk") ||
+                "No Prediction";
+
+
+            fetch("/predict", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body:
+                    JSON.stringify(data)
+
+            })
+
+                .then(response => response.json())
+
+                .then(output => {
+
+                    if (output.success) {
+
+                        let message = "";
+
+                        if (
+                            currentRisk === output.risk
+                        ) {
+
+                            message =
+                                "The simulated risk remains the same.";
+
+                        } else {
+
+                            message =
+                                "The simulated risk changed based on the modified financial values.";
+
+                        }
+
+
+                        document.getElementById(
+                            "result"
+                        ).innerHTML = `
+
+                    <h2>
+                        Simulation Result
+                    </h2>
+
+                    <div class="comparison">
+
+                        <div class="box">
+
+                            <h3>
+                                Current Prediction
+                            </h3>
+
+                            <div class="risk">
+                                ${currentRisk}
+                            </div>
+
+                        </div>
+
+
+                        <div class="box">
+
+                            <h3>
+                                Simulated Prediction
+                            </h3>
+
+                            <div class="risk">
+                                ${output.risk}
+                            </div>
+
+                            <div class="confidence">
+                                Confidence:
+                                ${output.confidence}%
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="message">
+
+                        ${message}
+
+                    </div>
+
+                `;
+
+                    }
+
+                    else {
+
+                        document.getElementById(
+                            "result"
+                        ).innerHTML = `
+                    <p class="error">
+                        ${output.error}
+                    </p>
+                `;
+
+                    }
+
+                })
+
+                .catch(error => {
+
+                    document.getElementById(
+                        "result"
+                    ).innerHTML = `
+                <p class="error">
+                    Unable to connect to the server.
+                    Please make sure Flask is running.
+                </p>
+            `;
+
+                    console.error(error);
+
+                });
+
+        }
+
+    </script>
+
+</body>
+
+</html>

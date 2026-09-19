@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Intelligent CIBIL Score Prediction</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #eef4ff, #ffffff);
+            color: #1e293b;
+        }
+
+        header {
+            background: #0f172a;
+            color: white;
+            padding: 20px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 24px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 25px;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 80px 20px 40px;
+        }
+
+        .hero h2 {
+            font-size: 42px;
+            margin-bottom: 15px;
+            color: #0f172a;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: #64748b;
+            max-width: 700px;
+            margin: auto;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 40px auto;
+            background: white;
+            padding: 35px;
+            border-radius: 18px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+        }
+
+        .container h3 {
+            font-size: 25px;
+            margin-bottom: 25px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input,
+        select {
+            padding: 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        .button-area {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 14px 40px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        #result {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+            text-align: center;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        @media(max-width: 700px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h2 {
+                font-size: 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>CIBIL Predictor</h1>
+
+        <nav>
+            <a href="/">Home</a>
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h2>Intelligent CIBIL Score Prediction</h2>
+
+        <p>
+            Predict credit risk using financial information,
+            repayment history, credit utilization and outstanding debt.
+        </p>
+    </section>
+
+    <div class="container">
+
+        <h3>Credit Risk Prediction</h3>
+
+        <form id="predictionForm">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>Monthly Income</label>
+                    <input type="number" id="monthly_income" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Employment Status</label>
+                    <select id="employment_status" required>
+                        <option value="">Select Status</option>
+                        <option value="Salaried">Salaried</option>
+                        <option value="Self-Employed">Self-Employed</option>
+                        <option value="Business">Business</option>
+                        <option value="Unemployed">Unemployed</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Loan Amount</label>
+                    <input type="number" id="loan_amount" required>
+                </div>
+
+                <div class="form-group">
+                    <label>EMI</label>
+                    <input type="number" id="emi" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Existing Loans</label>
+                    <input type="number" id="existing_loans" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Credit Utilization (%)</label>
+                    <input type="number" id="credit_utilization" min="0" max="100" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Repayment History (%)</label>
+                    <input type="number" id="repayment_history" min="0" max="100" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Delayed Payments</label>
+                    <input type="number" id="delayed_payments" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Outstanding Debt</label>
+                    <input type="number" id="outstanding_debt" required>
+                </div>
+
+            </div>
+
+            <div class="button-area">
+                <button type="submit">
+                    Predict Credit Risk
+                </button>
+            </div>
+
+        </form>
+
+        <div id="result"></div>
+
+    </div>
+
+    <script>
+
+        document.getElementById("predictionForm").addEventListener("submit", async function (event) {
+
+            event.preventDefault();
+
+            const result = document.getElementById("result");
+
+            const data = {
+
+                monthly_income:
+                    document.getElementById("monthly_income").value,
+
+                employment_status:
+                    document.getElementById("employment_status").value,
+
+                loan_amount:
+                    document.getElementById("loan_amount").value,
+
+                emi:
+                    document.getElementById("emi").value,
+
+                existing_loans:
+                    document.getElementById("existing_loans").value,
+
+                credit_utilization:
+                    document.getElementById("credit_utilization").value,
+
+                repayment_history:
+                    document.getElementById("repayment_history").value,
+
+                delayed_payments:
+                    document.getElementById("delayed_payments").value,
+
+                outstanding_debt:
+                    document.getElementById("outstanding_debt").value
+            };
+
+            try {
+
+                const response = await fetch("/predict", {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify(data)
+
+                });
+
+                const output = await response.json();
+
+                result.style.display = "block";
+
+                if (output.success) {
+
+                    // Save prediction data
+                    localStorage.setItem("risk", output.risk);
+                    localStorage.setItem("confidence", output.confidence);
+
+                    localStorage.setItem(
+                        "monthly_income",
+                        data.monthly_income
+                    );
+
+                    localStorage.setItem(
+                        "credit_utilization",
+                        data.credit_utilization
+                    );
+
+                    localStorage.setItem(
+                        "repayment_history",
+                        data.repayment_history
+                    );
+
+                    localStorage.setItem(
+                        "existing_loans",
+                        data.existing_loans
+                    );
+
+                    localStorage.setItem(
+                        "outstanding_debt",
+                        data.outstanding_debt
+                    );
+
+                    result.className = "success";
+
+                    result.innerHTML = `
+        <h3>Prediction Result</h3>
+
+        <p>
+            <strong>Risk Level:</strong>
+            ${output.risk}
+        </p>
+
+        <p>
+            <strong>Confidence:</strong>
+            ${output.confidence}%
+        </p>
+
+        <br>
+
+        <button onclick="window.location.href='/dashboard'">
+            View Credit Dashboard
+        </button>
+    `;
+
+                } else {
+
+                    result.className = "error";
+
+                    result.innerHTML = `
+                <strong>Error:</strong> ${output.error}
+            `;
+                }
+
+            } catch (error) {
+
+                result.style.display = "block";
+                result.className = "error";
+
+                result.innerHTML = `
+            <strong>Server Error:</strong> ${error.message}
+        `;
+            }
+
+        });
+
+    </script>
+
+</body>
+
+</html>

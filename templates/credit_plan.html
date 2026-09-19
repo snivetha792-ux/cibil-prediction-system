@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Credit Improvement Plan</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f8ff;
+            color: #1f2937;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: white;
+            padding: 25px;
+            border-radius: 18px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .header h1 {
+            margin: 0 0 8px;
+        }
+
+        .header p {
+            color: #6b7280;
+            margin: 0;
+        }
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06);
+        }
+
+        .summary-card h3 {
+            margin: 0 0 8px;
+            font-size: 15px;
+            color: #6b7280;
+        }
+
+        .summary-card strong {
+            font-size: 24px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 18px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .plan {
+            padding: 20px;
+            margin: 15px 0;
+            background: #f8faff;
+            border-radius: 14px;
+            border-left: 5px solid #6366f1;
+        }
+
+        .priority {
+            font-size: 13px;
+            font-weight: bold;
+            color: #6366f1;
+            margin-bottom: 8px;
+        }
+
+        .plan h3 {
+            margin: 5px 0 10px;
+        }
+
+        .plan p {
+            margin: 6px 0;
+            color: #4b5563;
+        }
+
+        .good {
+            border-left-color: #16a34a;
+        }
+
+        .warning {
+            border-left-color: #f59e0b;
+        }
+
+        .danger {
+            border-left-color: #dc2626;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 35px;
+            color: #6b7280;
+        }
+
+        .back {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 20px;
+            background: #111827;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+        }
+
+        @media (max-width: 700px) {
+            .summary {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="header">
+            <h1>🎯 Personalized Credit Improvement Plan</h1>
+            <p>Recommendations based on your latest credit prediction.</p>
+        </div>
+
+        <div class="summary">
+
+            <div class="summary-card">
+                <h3>Risk Level</h3>
+                <strong id="risk">-</strong>
+            </div>
+
+            <div class="summary-card">
+                <h3>Credit Utilization</h3>
+                <strong id="utilization">-</strong>
+            </div>
+
+            <div class="summary-card">
+                <h3>Repayment History</h3>
+                <strong id="repayment">-</strong>
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <h2>Your Recommended Actions</h2>
+
+            <div id="plans"></div>
+
+        </div>
+
+        <a href="/dashboard" class="back">
+            ← Back to Dashboard
+        </a>
+
+    </div>
+
+    <script>
+
+        const risk = localStorage.getItem("risk") || "";
+        const utilization =
+            Number(localStorage.getItem("credit_utilization")) || 0;
+
+        const repayment =
+            Number(localStorage.getItem("repayment_history")) || 0;
+
+        const delayedPayments =
+            Number(localStorage.getItem("delayed_payments")) || 0;
+
+        const existingLoans =
+            Number(localStorage.getItem("existing_loans")) || 0;
+
+        const outstandingDebt =
+            Number(localStorage.getItem("outstanding_debt")) || 0;
+
+        const monthlyIncome =
+            Number(localStorage.getItem("monthly_income")) || 0;
+
+
+        document.getElementById("risk").textContent =
+            risk || "No Prediction";
+
+        document.getElementById("utilization").textContent =
+            utilization + "%";
+
+        document.getElementById("repayment").textContent =
+            repayment + "%";
+
+
+        const plans = [];
+
+
+        // Credit Utilization
+        if (utilization > 30) {
+
+            plans.push(`
+            <div class="plan danger">
+
+                <div class="priority">🔴 HIGH PRIORITY</div>
+
+                <h3>Reduce Credit Utilization</h3>
+
+                <p>
+                    <strong>Current:</strong>
+                    ${utilization}%
+                </p>
+
+                <p>
+                    <strong>Target:</strong>
+                    Below 30%
+                </p>
+
+                <p>
+                    Try to reduce your credit card balance
+                    and avoid unnecessary credit usage.
+                </p>
+
+            </div>
+        `);
+
+        } else {
+
+            plans.push(`
+            <div class="plan good">
+
+                <div class="priority">🟢 GOOD</div>
+
+                <h3>Maintain Healthy Credit Utilization</h3>
+
+                <p>
+                    Your current utilization is ${utilization}%.
+                </p>
+
+                <p>
+                    Continue keeping utilization below 30%.
+                </p>
+
+            </div>
+        `);
+        }
+
+
+        // Delayed Payments
+        if (delayedPayments > 0) {
+
+            plans.push(`
+            <div class="plan danger">
+
+                <div class="priority">🔴 HIGH PRIORITY</div>
+
+                <h3>Avoid Delayed Payments</h3>
+
+                <p>
+                    <strong>Current:</strong>
+                    ${delayedPayments} delayed payment(s)
+                </p>
+
+                <p>
+                    <strong>Target:</strong>
+                    0 delayed payments
+                </p>
+
+                <p>
+                    Pay EMIs and credit card bills on time.
+                </p>
+
+            </div>
+        `);
+
+        } else {
+
+            plans.push(`
+            <div class="plan good">
+
+                <div class="priority">🟢 GOOD</div>
+
+                <h3>Maintain Timely Payments</h3>
+
+                <p>
+                    No delayed payments were recorded.
+                </p>
+
+                <p>
+                    Continue making payments on time.
+                </p>
+
+            </div>
+        `);
+        }
+
+
+        // Repayment History
+        if (repayment < 90) {
+
+            plans.push(`
+            <div class="plan warning">
+
+                <div class="priority">🟠 IMPROVE</div>
+
+                <h3>Improve Repayment History</h3>
+
+                <p>
+                    <strong>Current:</strong>
+                    ${repayment}%
+                </p>
+
+                <p>
+                    Try to maintain a consistent repayment
+                    record.
+                </p>
+
+            </div>
+        `);
+
+        } else {
+
+            plans.push(`
+            <div class="plan good">
+
+                <div class="priority">🟢 GOOD</div>
+
+                <h3>Maintain Good Repayment History</h3>
+
+                <p>
+                    Your repayment history is ${repayment}%.
+                </p>
+
+                <p>
+                    Continue making all payments on time.
+                </p>
+
+            </div>
+        `);
+        }
+
+
+        // Outstanding Debt
+        if (
+            monthlyIncome > 0 &&
+            outstandingDebt > monthlyIncome * 2
+        ) {
+
+            plans.push(`
+            <div class="plan danger">
+
+                <div class="priority">🔴 HIGH PRIORITY</div>
+
+                <h3>Reduce Outstanding Debt</h3>
+
+                <p>
+                    <strong>Outstanding Debt:</strong>
+                    ₹${outstandingDebt.toLocaleString("en-IN")}
+                </p>
+
+                <p>
+                    Focus on reducing existing outstanding
+                    balances before taking new loans.
+                </p>
+
+            </div>
+        `);
+        }
+
+
+        // Existing Loans
+        if (existingLoans > 2) {
+
+            plans.push(`
+            <div class="plan warning">
+
+                <div class="priority">🟠 IMPROVE</div>
+
+                <h3>Manage Existing Loans</h3>
+
+                <p>
+                    <strong>Existing Loans:</strong>
+                    ${existingLoans}
+                </p>
+
+                <p>
+                    Avoid unnecessary new loans and focus
+                    on managing current obligations.
+                </p>
+
+            </div>
+        `);
+        }
+
+
+        document.getElementById("plans").innerHTML =
+            plans.length > 0
+                ? plans.join("")
+                : `<div class="empty">
+                    No improvement recommendations available.
+               </div>`;
+
+    </script>
+
+</body>
+
+</html>

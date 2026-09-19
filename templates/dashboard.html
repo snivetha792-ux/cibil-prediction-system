@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Credit Health Dashboard</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #1e293b;
+        }
+
+        /* Header */
+
+        header {
+            height: 70px;
+            background: #0f172a;
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 6%;
+        }
+
+        header h1 {
+            font-size: 24px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 25px;
+        }
+
+        /* Main */
+
+        .dashboard {
+            width: 90%;
+            max-width: 1200px;
+            margin: 40px auto;
+        }
+
+        .welcome {
+            margin-bottom: 30px;
+        }
+
+        .welcome h2 {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .welcome p {
+            color: #64748b;
+        }
+
+        /* Cards */
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
+        }
+
+        .card h3 {
+            font-size: 15px;
+            color: #64748b;
+            margin-bottom: 15px;
+        }
+
+        .card .value {
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        .low {
+            color: #16a34a;
+        }
+
+        .medium {
+            color: #f59e0b;
+        }
+
+        .high {
+            color: #dc2626;
+        }
+
+        /* Health Section */
+
+        .health-section {
+            margin-top: 30px;
+
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+        }
+
+        .panel {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
+        }
+
+        .panel h2 {
+            margin-bottom: 25px;
+        }
+
+        /* Progress */
+
+        .progress-item {
+            margin-bottom: 25px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .progress {
+            height: 12px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: 10px;
+            background: #2563eb;
+        }
+
+        /* Quick Actions */
+
+        .actions {
+            display: grid;
+            gap: 15px;
+        }
+
+        .action {
+            padding: 18px;
+
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+
+            text-decoration: none;
+            color: #1e293b;
+
+            transition: 0.2s;
+        }
+
+        .action:hover {
+            background: #eff6ff;
+            border-color: #2563eb;
+        }
+
+        .action strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .action span {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        /* Responsive */
+
+        @media(max-width: 900px) {
+
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .health-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media(max-width: 600px) {
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            header {
+                padding: 0 20px;
+            }
+
+            nav a {
+                margin-left: 10px;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <header>
+
+        <h1>CIBIL Predictor</h1>
+
+        <nav>
+            <a href="/">Home</a>
+            <a href="/dashboard">Dashboard</a>
+        </nav>
+
+    </header>
+
+
+    <main class="dashboard">
+
+        <section class="welcome">
+
+            <h2>Credit Health Dashboard</h2>
+
+            <p>
+                Monitor your credit health and understand your financial risk.
+            </p>
+
+        </section>
+
+
+        <!-- Summary Cards -->
+
+        <section class="cards">
+
+            <!-- Credit Score -->
+            <div class="card">
+                <h3>Credit Score Range</h3>
+                <div class="value" id="creditScore">---</div>
+            </div>
+
+            <!-- Risk Level -->
+            <div class="card">
+                <h3>Risk Level</h3>
+                <div class="value low" id="riskLevel">---</div>
+            </div>
+
+            <!-- Credit Utilization -->
+            <div class="card">
+                <h3>Credit Utilization</h3>
+                <div class="value" id="utilization">---</div>
+            </div>
+
+            <!-- Confidence -->
+            <div class="card">
+                <h3>Confidence</h3>
+                <div class="value" id="confidence">---</div>
+            </div>
+
+        </section>
+
+        <!-- Health + Actions -->
+
+        <section class="health-section">
+
+
+            <!-- Credit Health -->
+
+            <div class="panel">
+
+                <h2>Credit Health Indicators</h2>
+
+                <!-- Repayment History -->
+                <div class="progress-item">
+
+                    <div class="progress-header">
+                        <span>Repayment History</span>
+                        <strong id="repaymentValue">0%</strong>
+                    </div>
+
+                    <div class="progress">
+                        <div class="progress-bar" id="repaymentBar" style="width:0%">
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <!-- Credit Utilization -->
+                <div class="progress-item">
+
+                    <div class="progress-header">
+                        <span>Credit Utilization</span>
+                        <strong id="utilizationValue">0%</strong>
+                    </div>
+
+                    <div class="progress">
+                        <div class="progress-bar" id="utilizationBar" style="width:0%">
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <!-- Loan Management -->
+                <div class="progress-item">
+
+                    <div class="progress-header">
+                        <span>Loan Management</span>
+                        <strong id="loanValue">0%</strong>
+                    </div>
+
+                    <div class="progress">
+                        <div class="progress-bar" id="loanBar" style="width:0%">
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <!-- Debt Management -->
+                <div class="progress-item">
+
+                    <div class="progress-header">
+                        <span>Debt Management</span>
+                        <strong id="debtValue">0%</strong>
+                    </div>
+
+                    <div class="progress">
+                        <div class="progress-bar" id="debtBar" style="width:0%">
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Quick Actions -->
+
+            <!-- Quick Actions -->
+
+            <div class="panel">
+
+                <h2>Quick Actions</h2>
+
+                <div class="actions">
+
+                    <a class="action" href="/">
+
+                        <strong>🔍 New Prediction</strong>
+
+                        <span>
+                            Check your credit risk
+                        </span>
+
+                    </a>
+
+
+                    <a class="action" href="/calculator">
+
+                        <strong>💰 EMI Calculator</strong>
+
+                        <span>
+                            Check EMI affordability
+                        </span>
+
+                    </a>
+
+
+                    <a class="action" href="/simulator">
+
+                        <strong>🔄 What-If Simulator</strong>
+
+                        <span>
+                            Simulate financial changes
+                        </span>
+
+                    </a>
+
+
+                    <a class="action" href="/advisor">
+
+                        <strong>💡 Credit Advisor</strong>
+
+                        <span>
+                            Get improvement suggestions
+                        </span>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <div class="action-buttons">
+
+        <a href="/explain" class="action">
+            🧠 Why This Result?
+        </a>
+
+        <a href="/credit-plan" class="action">
+            🎯 Improvement Plan
+        </a>
+
+    </div>
+</body>
+
+<script>
+
+    const risk = localStorage.getItem("risk");
+    const confidence = localStorage.getItem("confidence");
+    const utilization = Number(
+        localStorage.getItem("credit_utilization")
+    ) || 0;
+
+    const repaymentHistory = Number(
+        localStorage.getItem("repayment_history")
+    ) || 0;
+
+    const existingLoans = Number(
+        localStorage.getItem("existing_loans")
+    ) || 0;
+
+    const outstandingDebt = Number(
+        localStorage.getItem("outstanding_debt")
+    ) || 0;
+
+    const monthlyIncome = Number(
+        localStorage.getItem("monthly_income")
+    ) || 0;
+
+
+    // ===============================
+    // SUMMARY CARDS
+    // ===============================
+
+    // Risk
+    if (risk) {
+        document.getElementById("riskLevel").textContent = risk;
+    }
+
+    // Confidence
+    if (confidence) {
+        document.getElementById("confidence").textContent =
+            confidence + "%";
+    }
+
+    // Credit Utilization
+    document.getElementById("utilization").textContent =
+        utilization + "%";
+
+    // Credit Score Range
+    if (risk === "Low") {
+        document.getElementById("creditScore").textContent = "750+";
+    }
+    else if (risk === "Medium") {
+        document.getElementById("creditScore").textContent = "650-749";
+    }
+    else if (risk === "High") {
+        document.getElementById("creditScore").textContent = "Below 650";
+    }
+
+
+    // ===============================
+    // CREDIT HEALTH INDICATORS
+    // ===============================
+
+    // Repayment History
+    document.getElementById("repaymentValue").textContent =
+        repaymentHistory + "%";
+
+    document.getElementById("repaymentBar").style.width =
+        repaymentHistory + "%";
+
+
+    // Credit Utilization
+    document.getElementById("utilizationValue").textContent =
+        utilization + "%";
+
+    document.getElementById("utilizationBar").style.width =
+        utilization + "%";
+
+
+    // Loan Management
+    let loanManagement = 100 - (existingLoans * 15);
+
+    loanManagement = Math.max(
+        0,
+        Math.min(100, loanManagement)
+    );
+
+    document.getElementById("loanValue").textContent =
+        loanManagement + "%";
+
+    document.getElementById("loanBar").style.width =
+        loanManagement + "%";
+
+
+    // Debt Management
+    let debtManagement = 100;
+
+    if (monthlyIncome > 0) {
+
+        const debtRatio =
+            (outstandingDebt / monthlyIncome) * 100;
+
+        debtManagement = 100 - debtRatio;
+    }
+
+    debtManagement = Math.max(
+        0,
+        Math.min(100, debtManagement)
+    );
+
+    document.getElementById("debtValue").textContent =
+        Math.round(debtManagement) + "%";
+
+    document.getElementById("debtBar").style.width =
+        debtManagement + "%";
+
+</script>
+
+
+
+
+
+</html>

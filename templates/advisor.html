@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Credit Improvement Advisor</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 750px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #1e3a8a;
+        }
+
+        .risk-box {
+            text-align: center;
+            padding: 20px;
+            margin: 20px 0;
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+
+        .risk {
+            font-size: 28px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .advice {
+            margin-top: 20px;
+        }
+
+        .advice-item {
+            padding: 15px;
+            margin: 10px 0;
+            background: #f8fafc;
+            border-left: 5px solid #2563eb;
+            border-radius: 8px;
+        }
+
+        .back-button {
+            display: block;
+            text-align: center;
+            margin-top: 25px;
+            padding: 12px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Credit Improvement Advisor</h1>
+
+        <div class="risk-box">
+
+            <h2>Your Current Risk</h2>
+
+            <div class="risk" id="risk">
+                -
+            </div>
+
+            <p>
+                Confidence:
+                <strong id="confidence">-</strong>
+            </p>
+
+        </div>
+
+        <div class="advice">
+
+            <h2>Personalized Suggestions</h2>
+
+            <div id="adviceList"></div>
+
+        </div>
+
+        <a href="/dashboard" class="back-button">
+            Back to Dashboard
+        </a>
+
+    </div>
+
+    <script>
+
+        const risk = localStorage.getItem("risk");
+        const confidence = localStorage.getItem("confidence");
+
+        const utilization =
+            Number(localStorage.getItem("credit_utilization")) || 0;
+
+        const repaymentHistory =
+            Number(localStorage.getItem("repayment_history")) || 0;
+
+        const existingLoans =
+            Number(localStorage.getItem("existing_loans")) || 0;
+
+        const delayedPayments =
+            Number(localStorage.getItem("delayed_payments")) || 0;
+
+        const outstandingDebt =
+            Number(localStorage.getItem("outstanding_debt")) || 0;
+
+        document.getElementById("risk").textContent =
+            risk || "No Prediction";
+
+        document.getElementById("confidence").textContent =
+            confidence ? confidence + "%" : "-";
+
+        let suggestions = [];
+
+        /* Credit Utilization */
+
+        if (utilization > 30) {
+
+            suggestions.push(
+                "Reduce your credit utilization below 30% to improve credit health."
+            );
+
+        } else {
+
+            suggestions.push(
+                "Your credit utilization is within the recommended range. Continue maintaining it."
+            );
+        }
+
+
+        /* Repayment History */
+
+        if (repaymentHistory < 90) {
+
+            suggestions.push(
+                "Maintain timely repayments and avoid missing EMI or credit-card payments."
+            );
+
+        } else {
+
+            suggestions.push(
+                "Your repayment history is good. Continue making payments on time."
+            );
+        }
+
+
+        /* Delayed Payments */
+
+        if (delayedPayments > 0) {
+
+            suggestions.push(
+                "Try to avoid delayed payments because payment delays can negatively affect credit health."
+            );
+
+        } else {
+
+            suggestions.push(
+                "You currently have no delayed payments. Continue paying on time."
+            );
+        }
+
+
+        /* Existing Loans */
+
+        if (existingLoans > 2) {
+
+            suggestions.push(
+                "Consider reducing the number of active loans before taking new credit."
+            );
+
+        } else {
+
+            suggestions.push(
+                "Keep your number of active loans manageable."
+            );
+        }
+
+
+        /* Outstanding Debt */
+
+        if (outstandingDebt > 200000) {
+
+            suggestions.push(
+                "Work on reducing outstanding debt gradually to improve your overall debt position."
+            );
+
+        } else {
+
+            suggestions.push(
+                "Your outstanding debt is relatively controlled. Continue managing repayments carefully."
+            );
+        }
+
+
+        /* Risk */
+
+        if (risk === "High") {
+
+            suggestions.push(
+                "Your current predicted risk is High. Focus on reducing debt, improving repayment behavior, and controlling credit utilization."
+            );
+
+        } else if (risk === "Medium") {
+
+            suggestions.push(
+                "Your predicted risk is Medium. Small improvements in repayment behavior and debt management may improve your credit profile."
+            );
+
+        } else if (risk === "Low") {
+
+            suggestions.push(
+                "Your predicted risk is Low. Continue maintaining responsible credit behavior."
+            );
+
+        }
+
+
+        /* Display suggestions */
+
+        const adviceList =
+            document.getElementById("adviceList");
+
+        suggestions.forEach((suggestion, index) => {
+
+            const item =
+                document.createElement("div");
+
+            item.className = "advice-item";
+
+            item.innerHTML =
+                `<strong>${index + 1}.</strong> ${suggestion}`;
+
+            adviceList.appendChild(item);
+
+        });
+
+    </script>
+
+</body>
+
+</html>
